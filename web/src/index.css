@@ -1,0 +1,424 @@
+/* Hallmark · macrostructure: Stat-Led (landing) + Workbench (app shell) · H4 stat-led knobs: number=tabular mono display, qualifier=stacked-above, secondary stats=row of four
+ * nav: N9 edge-aligned minimal (landing) / N1b three-section + tab rail (app shell) · footer: Ft5 statement
+ * theme: custom · vibe: "salvage logistics, cool, deadline-driven" · paper: oklch(16% 0.012 200) · accent: oklch(80% 0.15 168)
+ * display: Geist 600 · body: Geist 400 · outlier: Geist Mono (wordmark + figures) · axes: dark / grotesque / chromatic-mint
+ * pre-emit critique: P5 H4 E4 S5 R4 V5 · contrast: pass (40-41) · slop: pass (42-45) · honest: pass (46) · tokens: pass (48) · mobile: pass (34, 49, 50-57)
+ * studied: no · context: user-provided (OFFICE RELAY) · genre: modern-minimal
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces — tinted toward the accent hue, never pure black */
+  --color-paper: oklch(16% 0.012 200);
+  --color-paper-2: oklch(20% 0.013 200);
+  --color-paper-3: oklch(25% 0.014 200);
+  --color-scrim: oklch(16% 0.012 200 / 0.9);
+
+  /* Ink */
+  --color-ink: oklch(95% 0.008 200);
+  --color-ink-2: oklch(80% 0.01 200);
+  --color-muted: oklch(66% 0.012 200);
+
+  /* Rules */
+  --color-rule: oklch(31% 0.012 200);
+  --color-rule-strong: oklch(45% 0.014 200);
+
+  /* Accent — one anchor, used for state and small anchors only */
+  --color-accent: oklch(80% 0.15 168);
+  --color-accent-hover: oklch(86% 0.14 168);
+  --color-accent-ink: oklch(20% 0.03 168);
+  --color-accent-quiet: oklch(58% 0.09 168);
+  --color-focus: oklch(86% 0.17 168);
+
+  /* Signals */
+  --color-alert: oklch(70% 0.18 25);
+  --color-alert-ink: oklch(20% 0.03 25);
+  --color-warn: oklch(83% 0.14 80);
+
+  /* Type */
+  --font-display: "Geist", "Noto Sans JP", ui-sans-serif, sans-serif;
+  --font-body: "Geist", "Noto Sans JP", ui-sans-serif, sans-serif;
+  --font-outlier: "Geist Mono", ui-monospace, monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.953rem;
+  --text-display: clamp(2.125rem, 4.4vw, 3.25rem);
+  --text-figure: clamp(3.25rem, 8vw, 5rem);
+
+  --lh-display: 1.08;
+  --lh-body: 1.6;
+  --measure: 62ch;
+
+  /* Space — 4-point scale */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 5.5rem;
+  --space-4xl: 7rem;
+  --space-5xl: 8rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+
+  /* Layers */
+  --z-sticky: 200;
+  --z-sticky-nav: 300;
+  --z-dropdown: 400;
+
+  --nav-height: 3.75rem;
+  --control-height: 2.75rem;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  @apply bg-ink text-slate-100 font-display antialiased;
+  font-family: var(--font-body);
+  line-height: var(--lh-body);
+}
+
+/* Focus rings appear instantly — never transitioned */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--color-accent-quiet);
+  color: var(--color-accent-ink);
+}
+
+@layer components {
+  /* Layout ------------------------------------------------------------- */
+  .wrap {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  /* モバイル基準: 画面幅いっぱいに写真を出すカード (境界は上下線のみ) */
+  .card-flush {
+    @apply border-y border-line bg-panel;
+  }
+  .photo-bleed {
+    @apply w-full object-cover;
+  }
+  .photo-square {
+    @apply aspect-square w-full object-cover;
+  }
+  .measure {
+    max-width: var(--measure);
+  }
+  /* 写真カードの一覧: モバイル 2 列を基準に、広い画面では列を増やしてカードを肥大化させない */
+  .grid-photos {
+    @apply grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
+  }
+  /* スワイプなど 1 枚見せの操作面はデスクトップで幅を抑える */
+  .stage-narrow {
+    @apply mx-auto w-full max-w-md;
+  }
+  .rule-top {
+    border-block-start: 1px solid var(--color-rule);
+  }
+
+  /* Type -------------------------------------------------------------- */
+  .display {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    font-weight: 600;
+    line-height: var(--lh-display);
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+  .heading {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+  .subheading {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .figure {
+    font-family: var(--font-outlier);
+    font-size: var(--text-figure);
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+  }
+  .num {
+    font-family: var(--font-outlier);
+    font-variant-numeric: tabular-nums;
+  }
+  .eyebrow {
+    font-family: var(--font-outlier);
+    font-size: var(--text-2xs);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Surfaces ---------------------------------------------------------- */
+  .card {
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+    background: var(--color-paper-2);
+    padding: var(--space-md);
+  }
+  .card-quiet {
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    background: transparent;
+  }
+  .card-lift {
+    transition:
+      transform var(--dur-short) var(--ease-out),
+      border-color var(--dur-short) var(--ease-out);
+  }
+  .panel-inset {
+    border-block-start: 1px solid var(--color-rule);
+    padding-block-start: var(--space-sm);
+  }
+
+  /* Controls ---------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    min-height: var(--control-height);
+    padding-inline: var(--space-sm);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+      background-color var(--dur-micro) var(--ease-out),
+      border-color var(--dur-micro) var(--ease-out),
+      color var(--dur-micro) var(--ease-out),
+      transform var(--dur-micro) var(--ease-out);
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-primary {
+    @apply btn;
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+  }
+  .btn-ghost {
+    @apply btn;
+    border-color: var(--color-rule-strong);
+    color: var(--color-ink);
+    background: transparent;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--color-paper-3);
+    border-color: var(--color-rule-strong);
+  }
+  .btn-quiet {
+    @apply btn;
+    color: var(--color-ink-2);
+    background: transparent;
+    padding-inline: var(--space-xs);
+  }
+  .btn-quiet:hover:not(:disabled) {
+    color: var(--color-ink);
+    background: var(--color-paper-3);
+  }
+  .link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+  .link:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Fields ------------------------------------------------------------ */
+  .input {
+    width: 100%;
+    min-height: var(--control-height);
+    padding: var(--space-2xs) var(--space-xs);
+    border: 1px solid var(--color-rule-strong);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-size: var(--text-sm);
+    outline: 2px solid transparent;
+    outline-offset: 1px;
+    transition:
+      border-color var(--dur-micro) var(--ease-out),
+      background-color var(--dur-micro) var(--ease-out);
+  }
+  .input:hover:not(:disabled) {
+    background: var(--color-paper-2);
+  }
+  .input:focus-visible {
+    border-color: var(--color-accent-quiet);
+    outline: 2px solid var(--color-focus);
+  }
+  .input:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .input[aria-invalid="true"] {
+    border-color: var(--color-alert);
+  }
+  .label {
+    display: block;
+    margin-block-end: var(--space-3xs);
+    font-family: var(--font-outlier);
+    font-size: var(--text-2xs);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .field-help {
+    display: block;
+    min-height: 1lh;
+    font-size: var(--text-xs);
+    color: var(--color-muted);
+  }
+
+  /* Small anchors ----------------------------------------------------- */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    padding: 0.125rem var(--space-2xs);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-outlier);
+    font-size: var(--text-2xs);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    color: var(--color-ink-2);
+    white-space: nowrap;
+  }
+  .tag-accent {
+    border-color: var(--color-accent-quiet);
+    color: var(--color-accent);
+  }
+
+  /* Navigation -------------------------------------------------------- */
+  .wordmark {
+    font-family: var(--font-outlier);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding-inline: var(--space-2xs);
+    border-block-end: 1px solid transparent;
+    font-size: var(--text-sm);
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--color-ink-2);
+    transition: color var(--dur-micro) var(--ease-out);
+  }
+  .nav-link:hover {
+    color: var(--color-ink);
+  }
+  .nav-link[aria-current] {
+    color: var(--color-accent);
+    border-block-end-color: var(--color-accent);
+  }
+
+  /* 固定フッタータブ */
+  .footer-tabs {
+    @apply fixed inset-x-0 bottom-0 z-sticky grid grid-cols-5 items-end border-t border-line bg-scrim pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden;
+  }
+  .footer-tab {
+    @apply flex h-14 flex-col items-center justify-center gap-1 text-[10px] font-semibold tracking-wide text-slate-500;
+  }
+  .footer-tab-active {
+    @apply text-relay;
+  }
+  /* 中央のカメラ出品ボタン (タブより一段持ち上げる) */
+  .footer-fab {
+    @apply -mt-5 flex h-14 w-14 items-center justify-center rounded-full bg-relay text-ink shadow-[0_0_0_4px_var(--color-paper)] transition active:scale-95;
+  }
+  .h-scroll {
+    @apply -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+  }
+  .section-title {
+    @apply text-sm font-black tracking-tightest text-slate-100;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card-lift:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-rule-strong);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .btn:active:not(:disabled),
+  .card-lift:hover {
+    transform: none;
+  }
+}

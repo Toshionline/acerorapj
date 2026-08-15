@@ -1,0 +1,6 @@
+# Cloudflare Pages (静的 SPA) の設定。Worker は使わないので pages_build_output_dir だけ持つ。
+# name = Pages プロジェクト名。`wrangler pages deploy` はこの 2 つを読むため、
+# CLI / CI ではディレクトリ引数も --project-name も渡さない。
+name = "office-relay"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-15"

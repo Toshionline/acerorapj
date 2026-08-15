@@ -1,0 +1,16 @@
+[
+  {
+    "date": "2026-08-15",
+    "verb": "redesign",
+    "scope": "multi-page (web/)",
+    "macrostructure": "Stat-Led (landing) + Workbench (app shell)",
+    "theme": "custom",
+    "theme_axes": "dark / grotesque / chromatic-mint",
+    "vibe": "salvage logistics, cool, deadline-driven",
+    "genre": "modern-minimal",
+    "nav": "N9 (landing) / N1b + tab rail (app shell)",
+    "footer": "Ft5 statement",
+    "enrichment": "none",
+    "brief": "OFFICE RELAY - B2B office asset relay platform, LP + authenticated dashboard"
+  }
+]
